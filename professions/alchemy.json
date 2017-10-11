@@ -1,0 +1,12 @@
+{
+    "name": "Alchemy",
+    "recipes": [{
+        "name": "something",
+        "iconName": "something",
+        "ingredients": [{
+            "name": "something",
+            "iconName": "something",
+            "amount": 2
+        }]
+    }]
+}
