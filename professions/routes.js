@@ -1,5 +1,9 @@
 var router = require('express').Router()
 
+router.get('/', (req, res) => {
+    res.sendFile(__dirname + '/professions.json')
+})
+
 router.get('/alchemy', (req, res) => {
     res.sendFile(__dirname + '/alchemy.json')
 })
