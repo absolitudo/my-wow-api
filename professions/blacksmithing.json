@@ -1,92 +1,59 @@
 {
-    "name": "Alchemy",
+    "name": "Blacksmithing",
     "recipes": [{
-            "name": "Potion of Luck",
+            "name": "Avenger's Trillium Waistplate",
             "iconName": "something",
             "level": 600,
             "amount": 1,
             "ingredients": [{
-                    "name": "Crystal Vial",
-                    "iconName": "something",
-                    "amount": 1
-                },
-                {
-                    "name": "Golden Lotus",
-                    "iconName": "something",
-                    "amount": 1
-                }
-
-            ]
-        },
-        {
-            "name": "Transmute: Primordial Ruby",
-            "iconName": "something",
-            "level": 600,
-            "amount": 1,
-            "ingredients": [{
-                    "name": "Pandarian Garnet",
-                    "iconName": "something",
-                    "amount": 1
-                },
-                {
-                    "name": "Golden Lotus",
-                    "iconName": "something",
-                    "amount": 1
-                }
-
-            ]
-        },
-        {
-            "name": "Transmute: Trillium Bar",
-            "iconName": "something",
-            "level": 600,
-            "amount": 1,
-            "ingredients": [{
-                "name": "Ghost Iron Bar",
+                "name": "Balanced Trillium Ingot",
                 "iconName": "something",
-                "amount": 10
+                "amount": 21
             }]
         },
         {
-            "name": "Transmute: Primal Diamond",
+            "name": "Protector's Trillium Waistguard",
             "iconName": "something",
             "level": 600,
             "amount": 1,
             "ingredients": [{
-                    "name": "Wild Jade",
-                    "iconName": "something",
-                    "amount": 2
-                },
-                {
-                    "name": "Vermilion Onyx",
-                    "iconName": "something",
-                    "amount": 2
-                },
-                {
-                    "name": "Imperial Amethyst",
-                    "iconName": "something",
-                    "amount": 2
-                }
-
-            ]
+                "name": "Balanced Trillium Ingot",
+                "iconName": "something",
+                "amount": 21
+            }]
         },
         {
-            "name": "Potion of Focus",
+            "name": "Blessed Trillium Belt",
             "iconName": "something",
             "level": 600,
             "amount": 1,
             "ingredients": [{
-                    "name": "Crystal Vial",
-                    "iconName": "something",
-                    "amount": 1
-                },
-                {
-                    "name": "Snow Lily",
-                    "iconName": "something",
-                    "amount": 2
-                }
-
-            ]
+                "name": "Balanced Trillium Ingot",
+                "iconName": "something",
+                "amount": 21
+            }]
+        },
+        {
+            "name": "Avenger's Trillium Legplates",
+            "iconName": "something",
+            "level": 600,
+            "amount": 1,
+            "ingredients": [{
+                "name": "Balanced Trillium Ingot",
+                "iconName": "something",
+                "amount": 28
+            }]
+        },
+        {
+            "name": "Protector's Trillium Legguards",
+            "iconName": "something",
+            "level": 600,
+            "amount": 1,
+            "ingredients": [{
+                "name": "Balanced Trillium Ingot",
+                "iconName": "something",
+                "amount": 28
+            }]
         },
         {
             "name": "Transmute: Sun's Radiance",
