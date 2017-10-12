@@ -4,7 +4,7 @@
     "description": "Wow api that includes profession data for mop recipes.",
     "main": "index.js",
     "scripts": {
-        "start": "index.js"
+        "start": "node index.js"
     },
     "author": "Ákos",
     "license": "ISC",
