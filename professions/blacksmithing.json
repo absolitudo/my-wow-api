@@ -56,17 +56,28 @@
             }]
         },
         {
-            "name": "Transmute: Sun's Radiance",
+            "name": "Blessed Trillium Greaves",
             "iconName": "something",
-            "level": 575,
+            "level": 600,
             "amount": 1,
             "ingredients": [{
-                    "name": "Sunstone",
+                "name": "Balanced Trillium Ingot",
+                "iconName": "something",
+                "amount": 28
+            }]
+        },
+        {
+            "name": "Balanced Trillium Ingot",
+            "iconName": "something",
+            "level": 600,
+            "amount": 1,
+            "ingredients": [{
+                    "name": "Trillium Bar",
                     "iconName": "something",
                     "amount": 1
                 },
                 {
-                    "name": "Golden Lotus",
+                    "name": "Spirit of War",
                     "iconName": "something",
                     "amount": 1
                 }
@@ -74,68 +85,450 @@
             ]
         },
         {
-            "name": "Transmute: Imperial Amethyst",
+            "name": "Crafted Malevolent Gladiator's Shield Wall",
             "iconName": "something",
-            "level": 575,
+            "level": 600,
             "amount": 1,
             "ingredients": [{
-                    "name": "Roguestone",
+                    "name": "Ghost Iron Bar",
                     "iconName": "something",
-                    "amount": 1
-                },
-                {
-                    "name": "Golden Lotus",
-                    "iconName": "something",
-                    "amount": 1
+                    "amount": 20
                 }
 
             ]
         },
         {
-            "name": "Transmute: Vermilion Onyx",
+            "name": "Crafted Malevolent Gladiator's Redoubt",
             "iconName": "something",
-            "level": 575,
-            "amount": 1,
-            "ingredients": [{
-                    "name": "Tiger Opal",
-                    "iconName": "something",
-                    "amount": 1
-                },
-                {
-                    "name": "Golden Lotus",
-                    "iconName": "something",
-                    "amount": 1
-                }
-
-            ]
-        },
-        {
-            "name": "Master Mana Potion",
-            "iconName": "something",
-            "level": 575,
+            "level": 600,
             "amount": 2,
             "ingredients": [{
-                    "name": "Crystal Vial",
-                    "iconName": "something",
-                    "amount": 2
-                },
-                {
-                    "name": "Snow Lily",
-                    "iconName": "something",
-                    "amount": 1
-                },
-                {
-                    "name": "Green Tea Leaf",
-                    "iconName": "something",
-                    "amount": 1
-                },
-                {
-                    "name": "Fool's Cap",
-                    "iconName": "something",
-                    "amount": 1
-                }
-            ]
+                "name": "Ghost Iron Bar",
+                "iconName": "something",
+                "amount": 20
+            }]
         },
+        {
+            "name": "Crafted Malevolent Gladiator's Barrier",
+            "iconName": "something",
+            "level": 600,
+            "amount": 2,
+            "ingredients": [{
+                "name": "Ghost Iron Bar",
+                "iconName": "something",
+                "amount": 20
+            }]
+        },
+        {
+            "name": "Crafted Malevolent Gladiator's Plate Shoulders",
+            "iconName": "something",
+            "level": 600,
+            "amount": 2,
+            "ingredients": [{
+                "name": "Ghost Iron Bar",
+                "iconName": "something",
+                "amount": 15
+            }]
+        },
+        {
+            "name": "Crafted Malevolent Gladiator's Plate Legguards",
+            "iconName": "something",
+            "level": 600,
+            "amount": 2,
+            "ingredients": [{
+                "name": "Ghost Iron Bar",
+                "iconName": "something",
+                "amount": 20
+            }]
+        },
+        {
+            "name": "Crafted Malevolent Gladiator's Plate Helm",
+            "iconName": "something",
+            "level": 600,
+            "amount": 2,
+            "ingredients": [{
+                "name": "Ghost Iron Bar",
+                "iconName": "something",
+                "amount": 20
+            }]
+        },
+        {
+            "name": "Crafted Malevolent Gladiator's Plate Gauntlets",
+            "iconName": "something",
+            "level": 600,
+            "amount": 2,
+            "ingredients": [{
+                "name": "Ghost Iron Bar",
+                "iconName": "something",
+                "amount": 15
+            }]
+        },
+        {
+            "name": "Crafted Malevolent Gladiator's Plate Chestpiece",
+            "iconName": "something",
+            "level": 600,
+            "amount": 2,
+            "ingredients": [{
+                "name": "Ghost Iron Bar",
+                "iconName": "something",
+                "amount": 20
+            }]
+        },
+        {
+            "name": "Crafted Malevolent Gladiator's Armplates of Alacrity",
+            "iconName": "something",
+            "level": 600,
+            "amount": 2,
+            "ingredients": [{
+                "name": "Ghost Iron Bar",
+                "iconName": "something",
+                "amount": 12
+            }]
+        },
+        {
+            "name": "Crafted Malevolent Gladiator's Armplates of Proficiency",
+            "iconName": "something",
+            "level": 600,
+            "amount": 2,
+            "ingredients": [{
+                "name": "Ghost Iron Bar",
+                "iconName": "something",
+                "amount": 12
+            }]
+        },
+        {
+            "name": "Crafted Malevolent Gladiator's Warboots of Alacrity",
+            "iconName": "something",
+            "level": 600,
+            "amount": 2,
+            "ingredients": [{
+                "name": "Ghost Iron Bar",
+                "iconName": "something",
+                "amount": 15
+            }]
+        },
+        /**/
+        {
+            "name": "Crafted Malevolent Gladiator's Warboots of Alacrity",
+            "iconName": "something",
+            "level": 600,
+            "amount": 2,
+            "ingredients": [{
+                "name": "Ghost Iron Bar",
+                "iconName": "something",
+                "amount": 15
+            }]
+        },
+        {
+            "name": "Crafted Malevolent Gladiator's Warboots of Alacrity",
+            "iconName": "something",
+            "level": 600,
+            "amount": 2,
+            "ingredients": [{
+                "name": "Ghost Iron Bar",
+                "iconName": "something",
+                "amount": 15
+            }]
+        },
+        {
+            "name": "Crafted Malevolent Gladiator's Warboots of Alacrity",
+            "iconName": "something",
+            "level": 600,
+            "amount": 2,
+            "ingredients": [{
+                "name": "Ghost Iron Bar",
+                "iconName": "something",
+                "amount": 15
+            }]
+        },
+        {
+            "name": "Crafted Malevolent Gladiator's Warboots of Alacrity",
+            "iconName": "something",
+            "level": 600,
+            "amount": 2,
+            "ingredients": [{
+                "name": "Ghost Iron Bar",
+                "iconName": "something",
+                "amount": 15
+            }]
+        },
+        {
+            "name": "Crafted Malevolent Gladiator's Warboots of Alacrity",
+            "iconName": "something",
+            "level": 600,
+            "amount": 2,
+            "ingredients": [{
+                "name": "Ghost Iron Bar",
+                "iconName": "something",
+                "amount": 15
+            }]
+        },
+        {
+            "name": "Crafted Malevolent Gladiator's Warboots of Alacrity",
+            "iconName": "something",
+            "level": 600,
+            "amount": 2,
+            "ingredients": [{
+                "name": "Ghost Iron Bar",
+                "iconName": "something",
+                "amount": 15
+            }]
+        },
+        {
+            "name": "Crafted Malevolent Gladiator's Warboots of Alacrity",
+            "iconName": "something",
+            "level": 600,
+            "amount": 2,
+            "ingredients": [{
+                "name": "Ghost Iron Bar",
+                "iconName": "something",
+                "amount": 15
+            }]
+        },
+        {
+            "name": "Crafted Malevolent Gladiator's Warboots of Alacrity",
+            "iconName": "something",
+            "level": 600,
+            "amount": 2,
+            "ingredients": [{
+                "name": "Ghost Iron Bar",
+                "iconName": "something",
+                "amount": 15
+            }]
+        },
+        {
+            "name": "Crafted Malevolent Gladiator's Warboots of Alacrity",
+            "iconName": "something",
+            "level": 600,
+            "amount": 2,
+            "ingredients": [{
+                "name": "Ghost Iron Bar",
+                "iconName": "something",
+                "amount": 15
+            }]
+        },
+        {
+            "name": "Crafted Malevolent Gladiator's Warboots of Alacrity",
+            "iconName": "something",
+            "level": 600,
+            "amount": 2,
+            "ingredients": [{
+                "name": "Ghost Iron Bar",
+                "iconName": "something",
+                "amount": 15
+            }]
+        },
+        {
+            "name": "Crafted Malevolent Gladiator's Warboots of Alacrity",
+            "iconName": "something",
+            "level": 600,
+            "amount": 2,
+            "ingredients": [{
+                "name": "Ghost Iron Bar",
+                "iconName": "something",
+                "amount": 15
+            }]
+        },
+        {
+            "name": "Crafted Malevolent Gladiator's Warboots of Alacrity",
+            "iconName": "something",
+            "level": 600,
+            "amount": 2,
+            "ingredients": [{
+                "name": "Ghost Iron Bar",
+                "iconName": "something",
+                "amount": 15
+            }]
+        },
+        {
+            "name": "Crafted Malevolent Gladiator's Warboots of Alacrity",
+            "iconName": "something",
+            "level": 600,
+            "amount": 2,
+            "ingredients": [{
+                "name": "Ghost Iron Bar",
+                "iconName": "something",
+                "amount": 15
+            }]
+        },
+        {
+            "name": "Crafted Malevolent Gladiator's Warboots of Alacrity",
+            "iconName": "something",
+            "level": 600,
+            "amount": 2,
+            "ingredients": [{
+                "name": "Ghost Iron Bar",
+                "iconName": "something",
+                "amount": 15
+            }]
+        },
+        {
+            "name": "Crafted Malevolent Gladiator's Warboots of Alacrity",
+            "iconName": "something",
+            "level": 600,
+            "amount": 2,
+            "ingredients": [{
+                "name": "Ghost Iron Bar",
+                "iconName": "something",
+                "amount": 15
+            }]
+        },
+        {
+            "name": "Crafted Malevolent Gladiator's Warboots of Alacrity",
+            "iconName": "something",
+            "level": 600,
+            "amount": 2,
+            "ingredients": [{
+                "name": "Ghost Iron Bar",
+                "iconName": "something",
+                "amount": 15
+            }]
+        },
+        {
+            "name": "Crafted Malevolent Gladiator's Warboots of Alacrity",
+            "iconName": "something",
+            "level": 600,
+            "amount": 2,
+            "ingredients": [{
+                "name": "Ghost Iron Bar",
+                "iconName": "something",
+                "amount": 15
+            }]
+        },
+        {
+            "name": "Crafted Malevolent Gladiator's Warboots of Alacrity",
+            "iconName": "something",
+            "level": 600,
+            "amount": 2,
+            "ingredients": [{
+                "name": "Ghost Iron Bar",
+                "iconName": "something",
+                "amount": 15
+            }]
+        },
+        {
+            "name": "Crafted Malevolent Gladiator's Warboots of Alacrity",
+            "iconName": "something",
+            "level": 600,
+            "amount": 2,
+            "ingredients": [{
+                "name": "Ghost Iron Bar",
+                "iconName": "something",
+                "amount": 15
+            }]
+        },
+        {
+            "name": "Crafted Malevolent Gladiator's Warboots of Alacrity",
+            "iconName": "something",
+            "level": 600,
+            "amount": 2,
+            "ingredients": [{
+                "name": "Ghost Iron Bar",
+                "iconName": "something",
+                "amount": 15
+            }]
+        },
+        {
+            "name": "Crafted Malevolent Gladiator's Warboots of Alacrity",
+            "iconName": "something",
+            "level": 600,
+            "amount": 2,
+            "ingredients": [{
+                "name": "Ghost Iron Bar",
+                "iconName": "something",
+                "amount": 15
+            }]
+        },
+        {
+            "name": "Crafted Malevolent Gladiator's Warboots of Alacrity",
+            "iconName": "something",
+            "level": 600,
+            "amount": 2,
+            "ingredients": [{
+                "name": "Ghost Iron Bar",
+                "iconName": "something",
+                "amount": 15
+            }]
+        },
+        {
+            "name": "Crafted Malevolent Gladiator's Warboots of Alacrity",
+            "iconName": "something",
+            "level": 600,
+            "amount": 2,
+            "ingredients": [{
+                "name": "Ghost Iron Bar",
+                "iconName": "something",
+                "amount": 15
+            }]
+        },
+        {
+            "name": "Crafted Malevolent Gladiator's Warboots of Alacrity",
+            "iconName": "something",
+            "level": 600,
+            "amount": 2,
+            "ingredients": [{
+                "name": "Ghost Iron Bar",
+                "iconName": "something",
+                "amount": 15
+            }]
+        },
+        {
+            "name": "Crafted Malevolent Gladiator's Warboots of Alacrity",
+            "iconName": "something",
+            "level": 600,
+            "amount": 2,
+            "ingredients": [{
+                "name": "Ghost Iron Bar",
+                "iconName": "something",
+                "amount": 15
+            }]
+        },
+        {
+            "name": "Crafted Malevolent Gladiator's Warboots of Alacrity",
+            "iconName": "something",
+            "level": 600,
+            "amount": 2,
+            "ingredients": [{
+                "name": "Ghost Iron Bar",
+                "iconName": "something",
+                "amount": 15
+            }]
+        },
+        {
+            "name": "Crafted Malevolent Gladiator's Warboots of Alacrity",
+            "iconName": "something",
+            "level": 600,
+            "amount": 2,
+            "ingredients": [{
+                "name": "Ghost Iron Bar",
+                "iconName": "something",
+                "amount": 15
+            }]
+        },
+        {
+            "name": "Crafted Malevolent Gladiator's Warboots of Alacrity",
+            "iconName": "something",
+            "level": 600,
+            "amount": 2,
+            "ingredients": [{
+                "name": "Ghost Iron Bar",
+                "iconName": "something",
+                "amount": 15
+            }]
+        },
+        {
+            "name": "Crafted Malevolent Gladiator's Warboots of Alacrity",
+            "iconName": "something",
+            "level": 600,
+            "amount": 2,
+            "ingredients": [{
+                "name": "Ghost Iron Bar",
+                "iconName": "something",
+                "amount": 15
+            }]
+        },
+
+        /**/
         {
             "name": "Darkwater Potion",
             "iconName": "something",

@@ -1,14 +1,14 @@
 {
-  "name": "my-wow-api",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "me",
-  "license": "ISC",
-  "dependencies": {
-    "express": "^4.16.2"
-  }
+    "name": "my-wow-api",
+    "version": "1.0.0",
+    "description": "Wow api that includes profession data for mop recipes.",
+    "main": "index.js",
+    "scripts": {
+        "start": "index.js"
+    },
+    "author": "Ákos",
+    "license": "ISC",
+    "dependencies": {
+        "express": "^4.16.2"
+    }
 }
