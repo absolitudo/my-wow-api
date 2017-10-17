@@ -1,6 +1,13 @@
 {
     "professions": [
         "alchemy",
-        "blacksmithing"
+        "blacksmithing",
+        "enchanting",
+        "engineering",
+        "inscription",
+        "jewelcrafting",
+        "leatherworking",
+        "mining",
+        "tailoring"
     ]
 }
