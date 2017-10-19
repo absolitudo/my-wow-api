@@ -4,6 +4,10 @@ router.get('/', (req, res) => {
     res.sendFile(__dirname + '/professions.json')
 })
 
+router.get('/all', (req, res) => {
+    res.sendFile(__dirname + '/allProfessions.json')
+})
+
 router.get('/alchemy', (req, res) => {
     res.sendFile(__dirname + '/alchemy.json')
 })
