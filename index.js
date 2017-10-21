@@ -8,7 +8,7 @@ app.use('/professions', cors())
 app.use('/professions', professionRoutes)
 
 app.get('/', (req, res) => {
-    res.send('This is my own api server for some wow stuff because i could\'nt find anything that would provide me the data that i need' )
+    res.send('A wow releated api.')
 })
  
 app.listen(process.env.PORT || 7777, () => console.log('server up'))
