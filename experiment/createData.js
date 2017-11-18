@@ -1,9 +1,18 @@
 
 let http = require('http')
 
-http.get('http://mop-shoot.tauri.hu/?spell=11479', function(res) {
+let alchemy = {}
+
+http.get('http://mop-shoot.tauri.hu/?spell=114773', function(res) {
     res.on('data', chunk => {
-        console.log(chunk.toString())
+        chunk = chunk.toString()
+
+        /* get reguired profession level of the recipe */
+        let levelRegExp = /\d+/.exec(/Requires \w+ \(\d+\)/g.exec(chunk))
+        levelRegExp && console.log(+levelRegExp[0])
+
+
+
     })
 }).on('error', function(e) {
     console.log("Got error: " + e.message);
