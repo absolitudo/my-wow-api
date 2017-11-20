@@ -3,7 +3,7 @@ let http = require('http')
 
 let alchemy = {}
 
-let spellID = 114773
+let spellID = 28587
 
 http.get('http://mop-shoot.tauri.hu/?spell=' + spellID, function(res) {
 
@@ -29,6 +29,7 @@ http.get('http://mop-shoot.tauri.hu/?spell=' + spellID, function(res) {
         let iconName
         let itemQuality
         let reagents
+        let tooltip
 
         /* Get reguired profession level of the recipe */
         level = +/\d+/.exec(/Requires \w+ \(\d+\)/g.exec(data))[0]
@@ -56,6 +57,15 @@ http.get('http://mop-shoot.tauri.hu/?spell=' + spellID, function(res) {
         let itemQualityRegExp = /quality:\d+/.exec(itemObjectRegExp.exec(data)[0])
         itemQuality = +/\d+/.exec(itemQualityRegExp[0])[0]
         
+        /* Get tooltip */
+        let tooltipRegExp = /<table class="tooltip-t"(.*)/.exec(data)[0]
+        tooltip = tooltipRegExp
+            .split(/(<td>|<br[ /]?[ /]?>)/)
+            .map(string => string
+                .replace(/<(.*?)>/g, '')
+                .trim()
+            )
+            .filter(string => string !== '' && !string.includes('Reagents'))
         /* Get reagents */
         let reagentsRegExp = /Reagents:(.*?)<br>/.exec(data)
         reagents = reagentsRegExp[0]
@@ -67,7 +77,7 @@ http.get('http://mop-shoot.tauri.hu/?spell=' + spellID, function(res) {
                     quantity: /\d+/.exec(reagent) ? +/\d+/.exec(reagent)[0] : 1
                 }
             })
-        console.log(level, name, itemID, itemQuantity, iconName, itemQuality, reagents)
+        console.log(level, name, itemID, itemQuantity, iconName, itemQuality, tooltip, reagents)
     })
 
 }).on('error', function(e) {
