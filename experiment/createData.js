@@ -3,7 +3,9 @@ let http = require('http')
 
 let alchemy = {}
 
-http.get('http://mop-shoot.tauri.hu/?spell=114773', function(res) {
+let spellID = 114773
+
+http.get('http://mop-shoot.tauri.hu/?spell=' + spellID, function(res) {
 
     
 
@@ -24,6 +26,7 @@ http.get('http://mop-shoot.tauri.hu/?spell=114773', function(res) {
         let name
         let itemID
         let itemQuantity
+        let iconName
 
         /* Get reguired profession level of the recipe */
         level = +/\d+/.exec(/Requires \w+ \(\d+\)/g.exec(data))[0]
@@ -42,7 +45,11 @@ http.get('http://mop-shoot.tauri.hu/?spell=114773', function(res) {
         itemQuantity = /\d+\)$/.exec(itemQuantityRegExp.exec(data))[0]
         itemQuantity = +itemQuantity.slice(0, itemQuantity.length - 1)
         
-        console.log(level, name, itemID, itemQuantity)
+        /* Get iconName */
+        let itemObjectRegExp = new RegExp('_\\[' + itemID + '\\](.+?)}')
+        let iconNameRegExp = /icon:(.*?),/.exec(itemObjectRegExp.exec(data)[0])[0]
+        iconName = iconNameRegExp.slice(6, iconNameRegExp.length - 2)
+        console.log(level, name, itemID, itemQuantity, iconName)
     })
 
 }).on('error', function(e) {
