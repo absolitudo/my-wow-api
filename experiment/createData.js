@@ -28,6 +28,7 @@ http.get('http://mop-shoot.tauri.hu/?spell=' + spellID, function(res) {
         let itemQuantity
         let iconName
         let itemQuality
+        let reagents
 
         /* Get reguired profession level of the recipe */
         level = +/\d+/.exec(/Requires \w+ \(\d+\)/g.exec(data))[0]
@@ -55,7 +56,21 @@ http.get('http://mop-shoot.tauri.hu/?spell=' + spellID, function(res) {
         let itemQualityRegExp = /quality:\d+/.exec(itemObjectRegExp.exec(data)[0])
         itemQuality = +/\d+/.exec(itemQualityRegExp[0])[0]
         
-        console.log(level, name, itemID, itemQuantity, iconName, itemQuality)
+        /* Get reagents */
+        let reagentsRegExp = /Reagents:(.*?)<br>/.exec(data)
+        reagents = reagentsRegExp[0]
+            .slice(9, reagentsRegExp[0].length - 4)
+            .trim()
+            .split(',')
+            .map(reagent => {
+                let parenthesesIndex = reagent.indexOf('(')
+                let quantity = /\d+/.exec(/\(\d+\)/.exec(reagent))
+                return {
+                    name: (parenthesesIndex > 1 ? reagent.slice(0, parenthesesIndex) : reagent).trim(),
+                    quantity: quantity ? +quantity[0] : 1
+                }
+            })
+        console.log(level, name, itemID, itemQuantity, iconName, itemQuality, reagents)
     })
 
 }).on('error', function(e) {
