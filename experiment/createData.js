@@ -5,16 +5,10 @@ let alchemy = {}
 
 var spellID = 28587
 
-const getItemID = (itemName) => {
-    return new Promise((resolve, reject) => {
-        // get the id of the item somehow to be able to get information
-    })
-}
-
 /* Returns the html of the requested webpage */
 const getData = (ID, isSpell) => {
     return new Promise((resolve, reject) => {
-        http.get('http://mop-shoot.tauri.hu/?' + (isSpell ? 'spell' : item) + '=' + ID, (res) => {
+        http.get('http://mop-shoot.tauri.hu/?' + (isSpell ? 'spell' : 'item') + '=' + ID, (res) => {
             let data = ''
             res.on('data', (chunk) => {
                 chunk = chunk.toString()
@@ -27,17 +21,28 @@ const getData = (ID, isSpell) => {
         })
     })
 }
+
 /* Returns the information of an item from spell id */
-async function getItemInfoFromItemID(ID) {
-    let item = {}
+const getItemInfoFromItemID = async (ID, name) => {
     let data = await getData(ID, false)
+    return new Promise((resolve, reject) => {
+        let tooltipRegExp = /tooltip-table(.*)/.exec(data)[0]
+        resolve(
+            tooltipRegExp
+                .split(/(<td>|<br[ /]?[ /]?>)/)
+                .map(string => string
+                    .replace(/<(.*?)>/g, '')
+                    .trim()
+                )
+                .filter(string => string !== '' && !string.includes('tooltip') && !string.includes(name))
+        )
+    })
 }
 
 /* Returns the information of an item from spell id */
-async function getItemInfoFromSpellID(ID) {
+const getItemInfoFromSpellID = async (ID) => {
     let item = {}
     let data = await getData(ID, true)
-    console.log(data)
     /* Get reguired profession level of the recipe */
     item.profReq = +/\d+/.exec(/Requires \w+ \(\d+\)/g.exec(data))[0]
 
@@ -76,24 +81,26 @@ async function getItemInfoFromSpellID(ID) {
     
     /* Get reagents */
     let reagentsRegExp = /Reagents:(.*?)<br>/.exec(data)
-    item.reagents = reagentsRegExp[0]
+    item.reagents = await Promise.all(reagentsRegExp[0]
         .replace(/(Reagents: |<(.*?)>|\(|\))/g, '')
         .split(',')
-        .map(reagent => {
+        .map(async (reagent) => {
             let reagentName = reagent.replace(/\d+/g, '').trim()
             let reagentIDRegExp = new RegExp('item=\\d+">' + reagentName)
             let reagentID = +/\d+/.exec(reagentIDRegExp.exec(data)[0])[0]
             return {
                 name: reagentName,
                 id: reagentID,
+                tooltip: await getItemInfoFromItemID(reagentID, reagentName),
                 quantity: /\d+/.exec(reagent) ? +/\d+/.exec(reagent)[0] : 1
             }
-        })
+        }))
     return item
 }
 
 async function main() {
-    console.log(await getItemInfoFromSpellID(spellID, true))
+    let item = await getItemInfoFromSpellID(spellID, true)
+    item.reagents.map(reagent => console.log(reagent.tooltip))
 }
 
 main()
