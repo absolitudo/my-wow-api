@@ -27,6 +27,7 @@ http.get('http://mop-shoot.tauri.hu/?spell=' + spellID, function(res) {
         let itemID
         let itemQuantity
         let iconName
+        let itemQuality
 
         /* Get reguired profession level of the recipe */
         level = +/\d+/.exec(/Requires \w+ \(\d+\)/g.exec(data))[0]
@@ -49,7 +50,12 @@ http.get('http://mop-shoot.tauri.hu/?spell=' + spellID, function(res) {
         let itemObjectRegExp = new RegExp('_\\[' + itemID + '\\](.+?)}')
         let iconNameRegExp = /icon:(.*?),/.exec(itemObjectRegExp.exec(data)[0])[0]
         iconName = iconNameRegExp.slice(6, iconNameRegExp.length - 2)
-        console.log(level, name, itemID, itemQuantity, iconName)
+
+        /* Get item quality */
+        let itemQualityRegExp = /quality:\d+/.exec(itemObjectRegExp.exec(data)[0])
+        itemQuality = +/\d+/.exec(itemQualityRegExp[0])[0]
+        
+        console.log(level, name, itemID, itemQuantity, iconName, itemQuality)
     })
 
 }).on('error', function(e) {
