@@ -34,23 +34,23 @@ http.get('http://mop-shoot.tauri.hu/?spell=' + spellID, function(res) {
         level = +/\d+/.exec(/Requires \w+ \(\d+\)/g.exec(data))[0]
 
         /* Get the name of the item or recipe */
-        let nameRegExp = /<h1>[\w ']+<\/h1>/g.exec(data)
-        name = nameRegExp[0].slice(4, nameRegExp.length - 6)
+        let nameRegExp = /<h1>[\w ']+<\/h1>/g.exec(data)[0]
+        name = nameRegExp.replace(/<(.*?)>/g, '')
 
         /* Get the ID of the item */
         let itemIDRegExp = new RegExp('<a href="\\?item=\\d+">' + name,'g')
-        itemIDRegExp = /\d+/.exec(itemIDRegExp.exec(data))
-        itemID = +itemIDRegExp[0]
+        itemIDRegExp = /\d+/.exec(itemIDRegExp.exec(data))[0]
+        itemID = +itemIDRegExp
 
         /* Get item quantity */
         let itemQuantityRegExp = new RegExp('createIcon\\(' + itemID + ', \\d+, \\d+\\)')
         itemQuantity = /\d+\)$/.exec(itemQuantityRegExp.exec(data))[0]
-        itemQuantity = +itemQuantity.slice(0, itemQuantity.length - 1)
+        itemQuantity = +itemQuantity.replace(/\)/, '')
         
         /* Get iconName */
         let itemObjectRegExp = new RegExp('_\\[' + itemID + '\\](.+?)}')
         let iconNameRegExp = /icon:(.*?),/.exec(itemObjectRegExp.exec(data)[0])[0]
-        iconName = iconNameRegExp.slice(6, iconNameRegExp.length - 2)
+        iconName = iconNameRegExp.replace(/icon:/, '')
 
         /* Get item quality */
         let itemQualityRegExp = /quality:\d+/.exec(itemObjectRegExp.exec(data)[0])
@@ -59,15 +59,12 @@ http.get('http://mop-shoot.tauri.hu/?spell=' + spellID, function(res) {
         /* Get reagents */
         let reagentsRegExp = /Reagents:(.*?)<br>/.exec(data)
         reagents = reagentsRegExp[0]
-            .slice(9, reagentsRegExp[0].length - 4)
-            .trim()
+            .replace(/(Reagents: |<(.*?)>|\(|\))/g, '')
             .split(',')
             .map(reagent => {
-                let parenthesesIndex = reagent.indexOf('(')
-                let quantity = /\d+/.exec(/\(\d+\)/.exec(reagent))
                 return {
-                    name: (parenthesesIndex > 1 ? reagent.slice(0, parenthesesIndex) : reagent).trim(),
-                    quantity: quantity ? +quantity[0] : 1
+                    name: reagent.replace(/\d+/g).trim(),
+                    quantity: /\d+/.exec(reagent) ? +/\d+/.exec(reagent)[0] : 1
                 }
             })
         console.log(level, name, itemID, itemQuantity, iconName, itemQuality, reagents)
