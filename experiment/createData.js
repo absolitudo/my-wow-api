@@ -5,10 +5,16 @@ let alchemy = {}
 
 var spellID = 28587
 
-/* Returns the html of the requested webpage */
-function getData(ID, isSpell) {
+const getItemID = (itemName) => {
     return new Promise((resolve, reject) => {
-        http.get('http://mop-shoot.tauri.hu/?' + (isSpell ? 'spell' : 'item') + '=' + ID, (res) => {
+        // get the id of the item somehow to be able to get information
+    })
+}
+
+/* Returns the html of the requested webpage */
+const getData = (ID, isSpell) => {
+    return new Promise((resolve, reject) => {
+        http.get('http://mop-shoot.tauri.hu/?' + (isSpell ? 'spell' : item) + '=' + ID, (res) => {
             let data = ''
             res.on('data', (chunk) => {
                 chunk = chunk.toString()
@@ -21,12 +27,17 @@ function getData(ID, isSpell) {
         })
     })
 }
-
-/* Makes an object of the item with a spell or item id */
-async function getItemInformation(ID, isSpell) {
+/* Returns the information of an item from spell id */
+async function getItemInfoFromItemID(ID) {
     let item = {}
-    let data = await getData(ID, isSpell)
-        
+    let data = await getData(ID, false)
+}
+
+/* Returns the information of an item from spell id */
+async function getItemInfoFromSpellID(ID) {
+    let item = {}
+    let data = await getData(ID, true)
+    console.log(data)
     /* Get reguired profession level of the recipe */
     item.profReq = +/\d+/.exec(/Requires \w+ \(\d+\)/g.exec(data))[0]
 
@@ -63,24 +74,26 @@ async function getItemInformation(ID, isSpell) {
         )
         .filter(string => string !== '' && !string.includes('Reagents'))
     
-    if(isSpell) {
-        /* Get reagents */
-        let reagentsRegExp = /Reagents:(.*?)<br>/.exec(data)
-        item.reagents = reagentsRegExp[0]
-            .replace(/(Reagents: |<(.*?)>|\(|\))/g, '')
-            .split(',')
-            .map(reagent => {
-                return {
-                    name: reagent.replace(/\d+/g).trim(),
-                    quantity: /\d+/.exec(reagent) ? +/\d+/.exec(reagent)[0] : 1
-                }
-            })
-    }
+    /* Get reagents */
+    let reagentsRegExp = /Reagents:(.*?)<br>/.exec(data)
+    item.reagents = reagentsRegExp[0]
+        .replace(/(Reagents: |<(.*?)>|\(|\))/g, '')
+        .split(',')
+        .map(reagent => {
+            let reagentName = reagent.replace(/\d+/g, '').trim()
+            let reagentIDRegExp = new RegExp('item=\\d+">' + reagentName)
+            let reagentID = +/\d+/.exec(reagentIDRegExp.exec(data)[0])[0]
+            return {
+                name: reagentName,
+                id: reagentID,
+                quantity: /\d+/.exec(reagent) ? +/\d+/.exec(reagent)[0] : 1
+            }
+        })
     return item
 }
 
 async function main() {
-    console.log(await getItemInformation(spellID, true))
+    console.log(await getItemInfoFromSpellID(spellID, true))
 }
 
 main()
