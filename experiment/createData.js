@@ -3,72 +3,70 @@ let http = require('http')
 
 let alchemy = {}
 
-let spellID = 28587
+var spellID = 28587
 
-http.get('http://mop-shoot.tauri.hu/?spell=' + spellID, function(res) {
-
-    
-
-    let data = ''
-
-    res.on('data', chunk => {
-        chunk = chunk.toString()
-        data += chunk
-
+/* Returns the html of the requested webpage */
+function getData(ID, isSpell) {
+    return new Promise((resolve, reject) => {
+        http.get('http://mop-shoot.tauri.hu/?' + (isSpell ? 'spell' : 'item') + '=' + ID, (res) => {
+            let data = ''
+            res.on('data', (chunk) => {
+                chunk = chunk.toString()
+                data += chunk
+            })
         
-
-
+            res.on('end', (something) => {
+                resolve(data)
+            })
+        })
     })
+}
 
-    res.on('end', (something) => {
-
-        let level
-        let name
-        let itemID
-        let itemQuantity
-        let iconName
-        let itemQuality
-        let reagents
-        let tooltip
-
-        /* Get reguired profession level of the recipe */
-        level = +/\d+/.exec(/Requires \w+ \(\d+\)/g.exec(data))[0]
-
-        /* Get the name of the item or recipe */
-        let nameRegExp = /<h1>[\w ']+<\/h1>/g.exec(data)[0]
-        name = nameRegExp.replace(/<(.*?)>/g, '')
-
-        /* Get the ID of the item */
-        let itemIDRegExp = new RegExp('<a href="\\?item=\\d+">' + name,'g')
-        itemIDRegExp = /\d+/.exec(itemIDRegExp.exec(data))[0]
-        itemID = +itemIDRegExp
-
-        /* Get item quantity */
-        let itemQuantityRegExp = new RegExp('createIcon\\(' + itemID + ', \\d+, \\d+\\)')
-        itemQuantity = /\d+\)$/.exec(itemQuantityRegExp.exec(data))[0]
-        itemQuantity = +itemQuantity.replace(/\)/, '')
+/* Makes an object of the item with a spell or item id */
+async function getItemInformation(ID, isSpell) {
+    let item = {}
+    let data = await getData(ID, isSpell)
         
-        /* Get iconName */
-        let itemObjectRegExp = new RegExp('_\\[' + itemID + '\\](.+?)}')
-        let iconNameRegExp = /icon:(.*?),/.exec(itemObjectRegExp.exec(data)[0])[0]
-        iconName = iconNameRegExp.replace(/icon:/, '')
+    /* Get reguired profession level of the recipe */
+    item.profReq = +/\d+/.exec(/Requires \w+ \(\d+\)/g.exec(data))[0]
 
-        /* Get item quality */
-        let itemQualityRegExp = /quality:\d+/.exec(itemObjectRegExp.exec(data)[0])
-        itemQuality = +/\d+/.exec(itemQualityRegExp[0])[0]
-        
-        /* Get tooltip */
-        let tooltipRegExp = /<table class="tooltip-t"(.*)/.exec(data)[0]
-        tooltip = tooltipRegExp
-            .split(/(<td>|<br[ /]?[ /]?>)/)
-            .map(string => string
-                .replace(/<(.*?)>/g, '')
-                .trim()
-            )
-            .filter(string => string !== '' && !string.includes('Reagents'))
+    /* Get the name of the item or recipe */
+    let nameRegExp = /<h1>[\w ']+<\/h1>/g.exec(data)[0]
+    item.name = nameRegExp.replace(/<(.*?)>/g, '')
+
+    /* Get the ID of the item */
+    let itemIDRegExp = new RegExp('<a href="\\?item=\\d+">' + item.name,'g')
+    itemIDRegExp = /\d+/.exec(itemIDRegExp.exec(data))[0]
+    item.id = +itemIDRegExp
+
+    /* Get item quantity */
+    let itemQuantityRegExp = new RegExp('createIcon\\(' + item.id + ', \\d+, \\d+\\)')
+    item.quantity = /\d+\)$/.exec(itemQuantityRegExp.exec(data))[0]
+    item.quantity = +item.quantity.replace(/\)/, '')
+    
+    /* Get iconName */
+    let itemObjectRegExp = new RegExp('_\\[' + item.id + '\\](.+?)}')
+    let iconNameRegExp = /icon:(.*?),/.exec(itemObjectRegExp.exec(data)[0])[0]
+    item.icon = iconNameRegExp.replace(/icon:/, '')
+
+    /* Get item quality */
+    let itemQualityRegExp = /quality:\d+/.exec(itemObjectRegExp.exec(data)[0])
+    item.quality = +/\d+/.exec(itemQualityRegExp[0])[0]
+    
+    /* Get tooltip */
+    let tooltipRegExp = /<table class="tooltip-t"(.*)/.exec(data)[0]
+    item.tooltip = tooltipRegExp
+        .split(/(<td>|<br[ /]?[ /]?>)/)
+        .map(string => string
+            .replace(/<(.*?)>/g, '')
+            .trim()
+        )
+        .filter(string => string !== '' && !string.includes('Reagents'))
+    
+    if(isSpell) {
         /* Get reagents */
         let reagentsRegExp = /Reagents:(.*?)<br>/.exec(data)
-        reagents = reagentsRegExp[0]
+        item.reagents = reagentsRegExp[0]
             .replace(/(Reagents: |<(.*?)>|\(|\))/g, '')
             .split(',')
             .map(reagent => {
@@ -77,12 +75,15 @@ http.get('http://mop-shoot.tauri.hu/?spell=' + spellID, function(res) {
                     quantity: /\d+/.exec(reagent) ? +/\d+/.exec(reagent)[0] : 1
                 }
             })
-        console.log(level, name, itemID, itemQuantity, iconName, itemQuality, tooltip, reagents)
-    })
+    }
+    return item
+}
 
-}).on('error', function(e) {
-    console.log("Got error: " + e.message);
-})
+async function main() {
+    console.log(await getItemInformation(spellID, true))
+}
+
+main()
 
 /*
 let alchemy = require('./alchemy.json')
