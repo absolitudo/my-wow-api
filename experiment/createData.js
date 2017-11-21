@@ -3,7 +3,12 @@ let http = require('http')
 
 let alchemy = {}
 
-var spellID = 28587
+var spellID = 143188
+
+/* TODO: */
+/* TYPE OF CURRENCY FOR SELL PRICES */
+/* CHECK IF DATA ALREADY EXISTS FOR REAGENT (maybe not) */
+/* ASYNC FUNCTION LOOP TO GET ALL DATA */
 
 /* Returns the html of the requested webpage */
 const getData = (ID, isSpell) => {
@@ -23,7 +28,7 @@ const getData = (ID, isSpell) => {
 }
 
 /* Returns the information of an item from spell id */
-const getItemInfoFromItemID = async (ID, name) => {
+const getReagentTooltip = async (ID, name) => {
     let data = await getData(ID, false)
     return new Promise((resolve, reject) => {
         let tooltipRegExp = /tooltip-table(.*)/.exec(data)[0]
@@ -72,13 +77,33 @@ const getItemInfoFromSpellID = async (ID) => {
     /* Get tooltip */
     let tooltipRegExp = /<table class="tooltip-t"(.*)/.exec(data)[0]
     item.tooltip = tooltipRegExp
-        .split(/(<td>|<br[ /]?[ /]?>)/)
-        .map(string => string
-            .replace(/<(.*?)>/g, '')
-            .trim()
-        )
-        .filter(string => string !== '' && !string.includes('Reagents'))
-    
+        .split(/(<td>|<br[ /]?[ /]?>|<th>|<\/th>)/)
+        .filter(string => string !== '' && !string.includes('Reagents') && !string.includes(item.name))
+        .reduce((acc, curr) => {
+            if(curr.includes('sec cast')) {
+                acc.castTime = curr.replace(/<(.*?)>/g, '')
+            } else if(curr.includes('Item Level')) {
+                acc.itemLevel = curr.replace(/<(.*?)>/g, '')
+            } else if(curr.includes('Requires')) {
+                acc.requires = curr.replace(/<(.*?)>/g, '')
+            } else if(curr.includes('Stack')) {
+                acc.maxStack = curr.replace(/<(.*?)>/g, '')
+            } else if(curr.includes('Sell Price:')) {
+                
+                let moneycopper = /<span class="moneycopper">\d+<\/span>/.exec(curr) ? +/\d+/.exec(/<span class="moneycopper">\d+<\/span>/.exec(curr)[0]) : 0
+                let moneysilver = /<span class="moneysilver">\d+<\/span>/.exec(curr) ? +/\d+/.exec(/<span class="moneysilver">\d+<\/span>/.exec(curr)[0]) : 0
+                let moneygold = /<span class="moneygold">\d+<\/span>/.exec(curr) ? +/\d+/.exec(/<span class="moneygold">\d+<\/span>/.exec(curr)[0]) : 0
+
+                acc.vendorSellPrice = moneygold + (moneysilver / 100) + (moneycopper / 10000)
+            } else {
+                curr = curr.replace(/<(.*?)>/g, '')
+                if(curr) {
+                    acc.description.push(curr)
+                }
+            }
+            return acc
+        },{description: []})
+        
     /* Get reagents */
     let reagentsRegExp = /Reagents:(.*?)<br>/.exec(data)
     item.reagents = await Promise.all(reagentsRegExp[0]
@@ -91,7 +116,7 @@ const getItemInfoFromSpellID = async (ID) => {
             return {
                 name: reagentName,
                 id: reagentID,
-                tooltip: await getItemInfoFromItemID(reagentID, reagentName),
+                tooltip: await getReagentTooltip(reagentID, reagentName),
                 quantity: /\d+/.exec(reagent) ? +/\d+/.exec(reagent)[0] : 1
             }
         }))
@@ -100,6 +125,8 @@ const getItemInfoFromSpellID = async (ID) => {
 
 async function main() {
     let item = await getItemInfoFromSpellID(spellID, true)
+    console.log('-----------------------------------------------------------------')
+    console.log(item)
     item.reagents.map(reagent => console.log(reagent.tooltip))
 }
 
