@@ -3,10 +3,10 @@ let http = require('http')
 
 let alchemy = {}
 
-var spellID = 143188
+var spellID = 114773
 
 /* TODO: */
-/* TYPE OF CURRENCY FOR SELL PRICES */
+/* REAGENT INFORMATION */
 /* CHECK IF DATA ALREADY EXISTS FOR REAGENT (maybe not) */
 /* ASYNC FUNCTION LOOP TO GET ALL DATA */
 
@@ -68,7 +68,7 @@ const getItemInfoFromSpellID = async (ID) => {
     /* Get iconName */
     let itemObjectRegExp = new RegExp('_\\[' + item.id + '\\](.+?)}')
     let iconNameRegExp = /icon:(.*?),/.exec(itemObjectRegExp.exec(data)[0])[0]
-    item.icon = iconNameRegExp.replace(/icon:/, '')
+    item.icon = iconNameRegExp.replace(/(icon:|,|')/g, '')
 
     /* Get item quality */
     let itemQualityRegExp = /quality:\d+/.exec(itemObjectRegExp.exec(data)[0])
@@ -103,7 +103,6 @@ const getItemInfoFromSpellID = async (ID) => {
             }
             return acc
         },{description: []})
-        
     /* Get reagents */
     let reagentsRegExp = /Reagents:(.*?)<br>/.exec(data)
     item.reagents = await Promise.all(reagentsRegExp[0]
