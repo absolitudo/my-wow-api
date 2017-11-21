@@ -6,8 +6,7 @@ let alchemy = {}
 var spellID = 143188
 
 /* TODO: */
-/* REAGENT INFORMATION */
-/* CHECK IF DATA ALREADY EXISTS FOR REAGENT (maybe not) */
+/* GET ICONS SOMEHOW */
 /* ASYNC FUNCTION LOOP TO GET ALL DATA */
 
 /* Returns the html of the requested webpage */
@@ -35,7 +34,7 @@ const getTooltip = (tooltipRegExp, name) => tooltipRegExp
         } else if(curr.includes('Item Level')) {
             acc.itemLevel = +/\d+/.exec(curr.replace(/<(.*?)>/g, ''))[0]
         } else if(curr.includes('Requires')) {
-            acc.requires = curr.replace(/<(.*?)>/g, '')
+            acc.requiredLevel = +/\d+/.exec(curr.replace(/<(.*?)>/g, ''))[0]
         } else if(curr.includes('Stack')) {
             acc.maxStack = +/\d+/.exec(curr.replace(/<(.*?)>/g, ''))[0]
         } else if(curr.includes('Sell Price:')) {
