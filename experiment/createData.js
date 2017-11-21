@@ -3,7 +3,7 @@ let http = require('http')
 
 let alchemy = {}
 
-var spellID = 114773
+var spellID = 143188
 
 /* TODO: */
 /* REAGENT INFORMATION */
@@ -26,21 +26,40 @@ const getData = (ID, isSpell) => {
         })
     })
 }
+const getTooltip = (tooltipRegExp, name) => tooltipRegExp
+    .split(/(<td>|<br[ /]?[ /]?>|<th>|<\/th>)/)
+    .filter(string => !string.includes('Reagent') && !string.includes(name))
+    .reduce((acc, curr) => {
+        if(curr.includes('sec cast')) {
+            acc.castTime = curr.replace(/<(.*?)>/g, '')
+        } else if(curr.includes('Item Level')) {
+            acc.itemLevel = +/\d+/.exec(curr.replace(/<(.*?)>/g, ''))[0]
+        } else if(curr.includes('Requires')) {
+            acc.requires = curr.replace(/<(.*?)>/g, '')
+        } else if(curr.includes('Stack')) {
+            acc.maxStack = +/\d+/.exec(curr.replace(/<(.*?)>/g, ''))[0]
+        } else if(curr.includes('Sell Price:')) {
+            
+            let moneycopper = /<span class="moneycopper">\d+<\/span>/.exec(curr) ? +/\d+/.exec(/<span class="moneycopper">\d+<\/span>/.exec(curr)[0]) : 0
+            let moneysilver = /<span class="moneysilver">\d+<\/span>/.exec(curr) ? +/\d+/.exec(/<span class="moneysilver">\d+<\/span>/.exec(curr)[0]) : 0
+            let moneygold = /<span class="moneygold">\d+<\/span>/.exec(curr) ? +/\d+/.exec(/<span class="moneygold">\d+<\/span>/.exec(curr)[0]) : 0
+
+            acc.vendorSellPrice = moneygold + (moneysilver / 100) + (moneycopper / 10000)
+        } else {
+            curr = curr.replace(/<(.*?)>/g, '')
+            if(curr) {
+                acc.description.push(curr)
+            }
+        }
+        return acc
+    },{description: []})
 
 /* Returns the information of an item from spell id */
 const getReagentTooltip = async (ID, name) => {
     let data = await getData(ID, false)
     return new Promise((resolve, reject) => {
-        let tooltipRegExp = /tooltip-table(.*)/.exec(data)[0]
-        resolve(
-            tooltipRegExp
-                .split(/(<td>|<br[ /]?[ /]?>)/)
-                .map(string => string
-                    .replace(/<(.*?)>/g, '')
-                    .trim()
-                )
-                .filter(string => string !== '' && !string.includes('tooltip') && !string.includes(name))
-        )
+        let tooltipRegExp = /<table class="tooltip-table(.*)/.exec(data)[0]
+        resolve(getTooltip(tooltipRegExp, name))
     })
 }
 
@@ -73,36 +92,11 @@ const getItemInfoFromSpellID = async (ID) => {
     /* Get item quality */
     let itemQualityRegExp = /quality:\d+/.exec(itemObjectRegExp.exec(data)[0])
     item.quality = +/\d+/.exec(itemQualityRegExp[0])[0]
-    
+     
     /* Get tooltip */
     let tooltipRegExp = /<table class="tooltip-t"(.*)/.exec(data)[0]
-    item.tooltip = tooltipRegExp
-        .split(/(<td>|<br[ /]?[ /]?>|<th>|<\/th>)/)
-        .filter(string => string !== '' && !string.includes('Reagents') && !string.includes(item.name))
-        .reduce((acc, curr) => {
-            if(curr.includes('sec cast')) {
-                acc.castTime = curr.replace(/<(.*?)>/g, '')
-            } else if(curr.includes('Item Level')) {
-                acc.itemLevel = curr.replace(/<(.*?)>/g, '')
-            } else if(curr.includes('Requires')) {
-                acc.requires = curr.replace(/<(.*?)>/g, '')
-            } else if(curr.includes('Stack')) {
-                acc.maxStack = curr.replace(/<(.*?)>/g, '')
-            } else if(curr.includes('Sell Price:')) {
-                
-                let moneycopper = /<span class="moneycopper">\d+<\/span>/.exec(curr) ? +/\d+/.exec(/<span class="moneycopper">\d+<\/span>/.exec(curr)[0]) : 0
-                let moneysilver = /<span class="moneysilver">\d+<\/span>/.exec(curr) ? +/\d+/.exec(/<span class="moneysilver">\d+<\/span>/.exec(curr)[0]) : 0
-                let moneygold = /<span class="moneygold">\d+<\/span>/.exec(curr) ? +/\d+/.exec(/<span class="moneygold">\d+<\/span>/.exec(curr)[0]) : 0
+    item.tooltip = getTooltip(tooltipRegExp, item.name)
 
-                acc.vendorSellPrice = moneygold + (moneysilver / 100) + (moneycopper / 10000)
-            } else {
-                curr = curr.replace(/<(.*?)>/g, '')
-                if(curr) {
-                    acc.description.push(curr)
-                }
-            }
-            return acc
-        },{description: []})
     /* Get reagents */
     let reagentsRegExp = /Reagents:(.*?)<br>/.exec(data)
     item.reagents = await Promise.all(reagentsRegExp[0]
