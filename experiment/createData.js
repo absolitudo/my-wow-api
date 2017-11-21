@@ -1,9 +1,20 @@
+const request = require('request')
+const fs = require('fs')
+const http = require('http')
 
-let http = require('http')
+
 
 let alchemy = {}
 
 var spellID = 143188
+
+const getIcon = (iconName) => {
+    return new Promise((resolve, reject) => {
+        request('http://mop-static.tauri.hu/images/icons/medium/' + iconName)
+            .pipe(fs.createWriteStream('./icons/' + iconName))
+            .on('close', resolve('Icon downloaded'))
+    })
+}
 
 /* TODO: */
 /* GET ICONS SOMEHOW */
@@ -116,10 +127,12 @@ const getItemInfoFromSpellID = async (ID) => {
 }
 
 async function main() {
-    let item = await getItemInfoFromSpellID(spellID, true)
-    console.log('-----------------------------------------------------------------')
-    console.log(item)
-    item.reagents.map(reagent => console.log(reagent.tooltip))
+    //let item = await getItemInfoFromSpellID(spellID, true)
+    //console.log('-----------------------------------------------------------------')
+    //console.log(item)
+    //item.reagents.map(reagent => console.log(reagent.tooltip))
+    let iconName = 'inv_bracer_plate_pvpdeathknight_e_01'
+    console.log(await getIcon(iconName + '.png'))
 }
 
 main()
