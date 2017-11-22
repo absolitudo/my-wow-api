@@ -116,10 +116,16 @@ const getItemInfoFromSpellID = async (ID) => {
             let reagentName = reagent.replace(/\d+/g, '').trim()
             let reagentIDRegExp = new RegExp('item=\\d+">' + reagentName)
             let reagentID = +/\d+/.exec(reagentIDRegExp.exec(data)[0])[0]
+            let reagentObjectRegExp = new RegExp('_\\[' + reagentID + '\\]' + '(.*?)};')
+            reagentObjectRegExp = reagentObjectRegExp.exec(data)[0]
+            console.log(reagentID)
+            console.log(reagentObjectRegExp)
             return {
                 name: reagentName,
                 id: reagentID,
                 tooltip: await getReagentTooltip(reagentID, reagentName),
+                iconName: /icon:'(.*?),/.exec(reagentObjectRegExp)[0].replace(/(icon:|'|,)/g, ''),
+                quality: +/\d+/.exec(/quality:\d+/.exec(reagentObjectRegExp)[0])[0],
                 quantity: /\d+/.exec(reagent) ? +/\d+/.exec(reagent)[0] : 1
             }
         }))
@@ -127,12 +133,11 @@ const getItemInfoFromSpellID = async (ID) => {
 }
 
 async function main() {
-    //let item = await getItemInfoFromSpellID(spellID, true)
-    //console.log('-----------------------------------------------------------------')
-    //console.log(item)
-    //item.reagents.map(reagent => console.log(reagent.tooltip))
-    let iconName = 'inv_bracer_plate_pvpdeathknight_e_01'
-    console.log(await getIcon(iconName + '.png'))
+    let item = await getItemInfoFromSpellID(spellID, true)
+    console.log('-----------------------------------------------------------------')
+    console.log(item)
+    //let iconName = 'inv_bracer_plate_pvpdeathknight_e_01'
+    //console.log(await getIcon(iconName + '.png'))
 }
 
 main()
