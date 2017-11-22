@@ -106,7 +106,7 @@ const getItemInfoFromSpellID = async (ID) => {
     /* Get iconName */
     let itemObjectRegExp = new RegExp('_\\[' + item.id + '\\](.+?)}')
     let iconNameRegExp = /icon:(.*?),/.exec(itemObjectRegExp.exec(data)[0])[0]
-    item.iconName = iconNameRegExp.replace(/(icon:|,|')/g, '')
+    item.iconName = iconNameRegExp.replace(/(icon:|,|')/g, '').toLocaleLowerCase()
 
     /* Get icon */
     if(!doesFileExist('./icons/' + item.iconName + '.png')) {
@@ -132,7 +132,7 @@ const getItemInfoFromSpellID = async (ID) => {
             let reagentID = +/\d+/.exec(reagentIDRegExp.exec(data)[0])[0]
             let reagentObjectRegExp = new RegExp('_\\[' + reagentID + '\\]' + '(.*?)};')
             reagentObjectRegExp = reagentObjectRegExp.exec(data)[0]
-            let reagentIconName = /icon:'(.*?),/.exec(reagentObjectRegExp)[0].replace(/(icon:|'|,)/g, '')
+            let reagentIconName = /icon:'(.*?),/.exec(reagentObjectRegExp)[0].replace(/(icon:|'|,)/g, '').toLocaleLowerCase()
             
             if(!doesFileExist('./icons/' + reagentIconName + '.png')) {
                 await getIcon(reagentIconName + '.png')
