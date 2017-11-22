@@ -2,8 +2,7 @@ const request = require('request')
 const fs = require('fs')
 const http = require('http')
 /* TODO: */
-/* ASYNC FUNCTION LOOP TO GET ALL DATA */
-
+/* GET ALL THE PROFESSION DATA */
 /* Downloads icon */
 const getIcon = (iconName) => {
     return new Promise((resolve, reject) => {
@@ -40,35 +39,43 @@ const getData = (ID, isSpell) => {
     })
 }
 
+const getQuantityFromItemId = (id, data) => {
+    let itemQuantityRegExp = new RegExp('createIcon\\(' + id + ', \\d+, \\d+\\)')
+    let quantity = /\d+\)$/.exec(itemQuantityRegExp.exec(data))[0]
+    quantity = +quantity.replace(/\)/, '')
+    return quantity
+}
+
 /* Gets the tooltip of an item */
-const getTooltip = (tooltipRegExp, name) => tooltipRegExp
-    .split(/(<td>|<br[ /]?[ /]?>|<th>|<\/th>)/)
-    .filter(string => !string.includes('Reagent') && !string.includes(name))
-    .reduce((acc, curr) => {
-        if(curr.includes('sec cast')) {
-            acc.castTime = curr.replace(/<(.*?)>/g, '')
-        } else if(curr.includes('Item Level')) {
-            acc.itemLevel = +/\d+/.exec(curr.replace(/<(.*?)>/g, ''))[0]
-        } else if(curr.includes('Requires')) {
-            acc.requiredLevel = +/\d+/.exec(curr.replace(/<(.*?)>/g, ''))[0]
-        } else if(curr.includes('Stack')) {
-            acc.maxStack = +/\d+/.exec(curr.replace(/<(.*?)>/g, ''))[0]
-        } else if(curr.includes('Sell Price:')) {
-            
-            let moneycopper = /<span class="moneycopper">\d+<\/span>/.exec(curr) ? +/\d+/.exec(/<span class="moneycopper">\d+<\/span>/.exec(curr)[0]) : 0
-            let moneysilver = /<span class="moneysilver">\d+<\/span>/.exec(curr) ? +/\d+/.exec(/<span class="moneysilver">\d+<\/span>/.exec(curr)[0]) : 0
-            let moneygold = /<span class="moneygold">\d+<\/span>/.exec(curr) ? +/\d+/.exec(/<span class="moneygold">\d+<\/span>/.exec(curr)[0]) : 0
+const getTooltip = (tooltipRegExp, name) => {
+    return tooltipRegExp
+        .split(/(<td>|<br[ /]?[ /]?>|<th>|<\/th>)/)
+        .filter(string => !string.includes('Reagent') && !string.includes(name))
+        .reduce((acc, curr) => {
+            if(curr.includes('sec cast')) {
+                acc.castTime = curr.replace(/<(.*?)>/g, '')
+            } else if(curr.includes('Item Level')) {
+                acc.itemLevel = +/\d+/.exec(curr.replace(/<(.*?)>/g, ''))[0]
+            } else if(curr.includes('Requires')) {
+                acc.requiredLevel = +/\d+/.exec(curr.replace(/<(.*?)>/g, ''))[0]
+            } else if(curr.includes('Stack')) {
+                acc.maxStack = +/\d+/.exec(curr.replace(/<(.*?)>/g, ''))[0]
+            } else if(curr.includes('Sell Price:')) {
+                
+                let moneycopper = /<span class="moneycopper">\d+<\/span>/.exec(curr) ? +/\d+/.exec(/<span class="moneycopper">\d+<\/span>/.exec(curr)[0]) : 0
+                let moneysilver = /<span class="moneysilver">\d+<\/span>/.exec(curr) ? +/\d+/.exec(/<span class="moneysilver">\d+<\/span>/.exec(curr)[0]) : 0
+                let moneygold = /<span class="moneygold">\d+<\/span>/.exec(curr) ? +/\d+/.exec(/<span class="moneygold">\d+<\/span>/.exec(curr)[0]) : 0
 
-            acc.vendorSellPrice = moneygold + (moneysilver / 100) + (moneycopper / 10000)
-        } else {
-            curr = curr.replace(/<(.*?)>/g, '')
-            if(curr) {
-                acc.description.push(curr)
+                acc.vendorSellPrice = moneygold + (moneysilver / 100) + (moneycopper / 10000)
+            } else {
+                curr = curr.replace(/<(.*?)>/g, '')
+                if(curr) {
+                    acc.description.push(curr)
+                }
             }
-        }
-        return acc
-    },{description: []})
-
+            return acc
+        },{description: []})
+}
 /* Returns the information of an item from spell id */
 const getReagentTooltip = async (ID, name) => {
     let data = await getData(ID, false)
@@ -147,35 +154,115 @@ const getItemInfoFromSpellID = async (ID) => {
     return item
 }
 
+const alternativeScrape = async (ID, name) => {
+    let item = {}
+    let data = await getData(ID, true)
+    /* Get reguired profession level of the recipe */
+    //item.profReq = +/\d+/.exec(/Requires \w+ \(\d+\)/g.exec(data))[0]
+    //console.log('profession requirement:', item.profReq)
+    /* Get the name of the item or recipe */
+    //let nameRegExp = /<h1>[\w ']+<\/h1>/g.exec(data)
+    //console.log(nameRegExp)
+    //item.name = nameRegExp.replace(/<(.*?)>/g, '')
+    //console.log('item name:', item.name)
+    item.name = name
+    console.log(item.name)
+    /* Get the ID of the item */
+    let itemIDRegExp = new RegExp('<a href="\\?item=\\d+">' + item.name,'g')
+    itemIDRegExp = /\d+/.exec(itemIDRegExp.exec(data))[0]
+    item.id = +itemIDRegExp
+    console.log('item id:', item.id)
+    
+    /* Get item quantity */
+    item.quantity = getQuantityFromItemId(item.id, data)
+    console.log('item quantity:', item.quantity)
+    
+    /* Get iconName */
+    let itemObjectRegExp = new RegExp('_\\[' + item.id + '\\](.+?)}')
+    let iconNameRegExp = /icon:(.*?),/.exec(itemObjectRegExp.exec(data)[0])[0]
+    item.iconName = iconNameRegExp.replace(/(icon:|,|')/g, '').toLocaleLowerCase()
+    console.log('item icon name:', item.iconName)
+    
+    /* Get icon */
+    if(!doesFileExist('./icons/' + item.iconName + '.png')) {
+        getIcon(item.iconName + '.png')
+    } 
+
+    /* Get item quality */
+    let itemQualityRegExp = /quality:\d+/.exec(itemObjectRegExp.exec(data)[0])
+    item.quality = +/\d+/.exec(itemQualityRegExp[0])[0]
+    console.log('item quality:', item.quality)
+    
+    /* Get tooltip */
+    let tooltipRegExp = /<table class="tooltip-t"(.*)/.exec(data)[0]
+    item.tooltip = getTooltip(tooltipRegExp, item.name)
+    console.log('item tooltip:', item.tooltip)
+    
+    /* Get reagents */
+    let reagentsRegExp = /<table class="iconlist">([\s\S]+?|.*?)<\/table>/.exec(data)
+    item.reagents = await Promise.all(
+        reagentsRegExp[0]
+            .split('<tr>')
+            .filter(string => string.includes('item='))
+            .map(async (reagent) => {
+                let reagentName = />.(.*?)<\/a>/.exec(reagent)[0].replace(/(<(.*?)>|<|>)/g, '').trim()
+                let reagentID = +/\d+/.exec(/<a href="\?item=\d+">/.exec(reagent)[0])[0]
+                let reagentObjectRegExp = new RegExp('_\\[' + reagentID + '\\]' + '(.*?)};')
+                reagentObjectRegExp = reagentObjectRegExp.exec(data)[0]
+                let reagentIconName = /icon:'(.*?),/.exec(reagentObjectRegExp)[0].replace(/(icon:|'|,)/g, '').toLocaleLowerCase()
+                let reagentQuantity = getQuantityFromItemId(item.id, data)
+                let reagentQuality = +/\d+/.exec(/quality:\d+/.exec(reagentObjectRegExp)[0])[0]
+                if(!doesFileExist('./icons/' + reagentIconName + '.png')) {
+                    await getIcon(reagentIconName + '.png')
+                }
+
+                return {
+                    name: reagentName,
+                    id: reagentID,
+                    tooltip: await getReagentTooltip(reagentID, reagentName),
+                    iconName: reagentIconName,
+                    quality: reagentQuality,
+                    quantity: reagentQuantity
+                }
+            })
+        )
+    return item
+    console.log('item reagents:', item.reagents)
+}
+
 async function main() {
     
 
-    let alchemy = require('./alchemy.json')
-    let newAlchemy = {}
-
-    for(let spellID in alchemy) {
+    let profession = require('./blacksmithing.json')
+    let newProfession = {}
+    let enchantItem = await alternativeScrape(76443, profession[76443].name_enus)
+    console.log(enchantItem)
+    // PROBABLY THE ITEM NAME IS CAUSING ALL THE FKING ISSUES
+    /*
+    for(let spellID in profession) {
         try {
             console.log(spellID, 'is processing')
             let item = await getItemInfoFromSpellID(spellID)
-            newAlchemy[item.name] = item
+            newProfession[item.name] = item
             console.log(spellID, item.name, 'is processed')
         } catch(e) {
-            console.log(spellID, alchemy[spellID].name_enus, 'failed')
-            newAlchemy[alchemy[spellID].name_enus] = {
-                name: alchemy[spellID].name_enus,
+            console.log(spellID, profession[spellID].name_enus, 'failed')
+            newProfession[profession[spellID].name_enus] = {
+                name: profession[spellID].name_enus,
                 spellID: spellID,
                 description: 'fetch failed'
             }
         }
     }
     
-    fs.writeFile('new-alchemy.json', JSON.stringify(newAlchemy), (something) => {
+    fs.writeFile('new-enchanting.json', JSON.stringify(newProfession), (something) => {
         if(something) {
             console.log(something)
         } else {
             console.log('done')
         }
     })
+    */
 }
 
 main()
