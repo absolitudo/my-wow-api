@@ -6,7 +6,7 @@ const http = require('http')
 
 let alchemy = {}
 
-var spellID = 143188
+var spellID = 114773
 
 const getIcon = (iconName) => {
     return new Promise((resolve, reject) => {
@@ -14,6 +14,15 @@ const getIcon = (iconName) => {
             .pipe(fs.createWriteStream('./icons/' + iconName))
             .on('close', resolve('Icon downloaded'))
     })
+}
+
+function doesFileExist(path) {
+    try {
+        fs.accessSync(path);
+        return true;
+    } catch (e) {
+        return false;
+    }
 }
 
 /* TODO: */
@@ -97,7 +106,12 @@ const getItemInfoFromSpellID = async (ID) => {
     /* Get iconName */
     let itemObjectRegExp = new RegExp('_\\[' + item.id + '\\](.+?)}')
     let iconNameRegExp = /icon:(.*?),/.exec(itemObjectRegExp.exec(data)[0])[0]
-    item.icon = iconNameRegExp.replace(/(icon:|,|')/g, '')
+    item.iconName = iconNameRegExp.replace(/(icon:|,|')/g, '')
+
+    /* Get icon */
+    if(!doesFileExist('./icons/' + item.iconName + '.png')) {
+        getIcon(item.iconName + '.png')
+    } 
 
     /* Get item quality */
     let itemQualityRegExp = /quality:\d+/.exec(itemObjectRegExp.exec(data)[0])
@@ -118,13 +132,18 @@ const getItemInfoFromSpellID = async (ID) => {
             let reagentID = +/\d+/.exec(reagentIDRegExp.exec(data)[0])[0]
             let reagentObjectRegExp = new RegExp('_\\[' + reagentID + '\\]' + '(.*?)};')
             reagentObjectRegExp = reagentObjectRegExp.exec(data)[0]
-            console.log(reagentID)
-            console.log(reagentObjectRegExp)
+            let reagentIconName = /icon:'(.*?),/.exec(reagentObjectRegExp)[0].replace(/(icon:|'|,)/g, '')
+            
+            if(!doesFileExist('./icons/' + reagentIconName + '.png')) {
+                await getIcon(reagentIconName + '.png')
+            }
+
+
             return {
                 name: reagentName,
                 id: reagentID,
                 tooltip: await getReagentTooltip(reagentID, reagentName),
-                iconName: /icon:'(.*?),/.exec(reagentObjectRegExp)[0].replace(/(icon:|'|,)/g, ''),
+                iconName: reagentIconName,
                 quality: +/\d+/.exec(/quality:\d+/.exec(reagentObjectRegExp)[0])[0],
                 quantity: /\d+/.exec(reagent) ? +/\d+/.exec(reagent)[0] : 1
             }
@@ -135,7 +154,7 @@ const getItemInfoFromSpellID = async (ID) => {
 async function main() {
     let item = await getItemInfoFromSpellID(spellID, true)
     console.log('-----------------------------------------------------------------')
-    console.log(item)
+    //console.log(item)
     //let iconName = 'inv_bracer_plate_pvpdeathknight_e_01'
     //console.log(await getIcon(iconName + '.png'))
 }
