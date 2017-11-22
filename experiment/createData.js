@@ -154,8 +154,19 @@ async function main() {
     let newAlchemy = {}
 
     for(let spellID in alchemy) {
-        let item = await getItemInfoFromSpellID(spellID)
-        newAlchemy[item.name] = item
+        try {
+            console.log(spellID, 'is processing')
+            let item = await getItemInfoFromSpellID(spellID)
+            newAlchemy[item.name] = item
+            console.log(spellID, item.name, 'is processed')
+        } catch(e) {
+            console.log(spellID, alchemy[spellID].name_enus, 'failed')
+            newAlchemy[alchemy[spellID].name_enus] = {
+                name: alchemy[spellID].name_enus,
+                spellID: spellID,
+                description: 'fetch failed'
+            }
+        }
     }
     
     fs.writeFile('new-alchemy.json', JSON.stringify(newAlchemy), (something) => {
