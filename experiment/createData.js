@@ -1,13 +1,10 @@
 const request = require('request')
 const fs = require('fs')
 const http = require('http')
+/* TODO: */
+/* ASYNC FUNCTION LOOP TO GET ALL DATA */
 
-
-
-let alchemy = {}
-
-var spellID = 114773
-
+/* Downloads icon */
 const getIcon = (iconName) => {
     return new Promise((resolve, reject) => {
         request('http://mop-static.tauri.hu/images/icons/medium/' + iconName)
@@ -16,7 +13,8 @@ const getIcon = (iconName) => {
     })
 }
 
-function doesFileExist(path) {
+/* Check if a file already exists */
+const doesFileExist = (path) => {
     try {
         fs.accessSync(path);
         return true;
@@ -24,10 +22,6 @@ function doesFileExist(path) {
         return false;
     }
 }
-
-/* TODO: */
-/* GET ICONS SOMEHOW */
-/* ASYNC FUNCTION LOOP TO GET ALL DATA */
 
 /* Returns the html of the requested webpage */
 const getData = (ID, isSpell) => {
@@ -45,6 +39,8 @@ const getData = (ID, isSpell) => {
         })
     })
 }
+
+/* Gets the tooltip of an item */
 const getTooltip = (tooltipRegExp, name) => tooltipRegExp
     .split(/(<td>|<br[ /]?[ /]?>|<th>|<\/th>)/)
     .filter(string => !string.includes('Reagent') && !string.includes(name))
@@ -152,22 +148,23 @@ const getItemInfoFromSpellID = async (ID) => {
 }
 
 async function main() {
-    let item = await getItemInfoFromSpellID(spellID, true)
-    console.log('-----------------------------------------------------------------')
-    //console.log(item)
-    //let iconName = 'inv_bracer_plate_pvpdeathknight_e_01'
-    //console.log(await getIcon(iconName + '.png'))
+    
+
+    let alchemy = require('./alchemy.json')
+    let newAlchemy = {}
+
+    for(let spellID in alchemy) {
+        let item = await getItemInfoFromSpellID(spellID)
+        newAlchemy[item.name] = item
+    }
+    
+    fs.writeFile('new-alchemy.json', JSON.stringify(newAlchemy), (something) => {
+        if(something) {
+            console.log(something)
+        } else {
+            console.log('done')
+        }
+    })
 }
 
 main()
-
-/*
-let alchemy = require('./alchemy.json')
-let length = 0
-for(let item in alchemy) {
-    console.log(alchemy[item])
-    length += 1
-}
-
-console.log(length)
-*/
