@@ -41,8 +41,7 @@ const getData = (ID, isSpell) => {
 
 const getQuantityFromItemId = (id, data) => {
     let itemQuantityRegExp = new RegExp('createIcon\\(' + id + ', \\d+, \\d+\\)')
-    let quantity = /\d+\)$/.exec(itemQuantityRegExp.exec(data))[0]
-    quantity = +quantity.replace(/\)/, '')
+    let quantity = /\d+\)$/.exec(itemQuantityRegExp.exec(data)) ? +/\d+\)$/.exec(itemQuantityRegExp.exec(data))[0].replace(/\)/, '') : 1
     return quantity
 }
 
@@ -86,7 +85,7 @@ const getReagentTooltip = async (ID, name) => {
 }
 
 /* Returns the information of an item from spell id */
-const getItemInfoFromSpellID = async (ID) => {
+const getItemInfoFromSpellID = async (spell) => {
     let item = {}
     let data = await getData(ID, true)
     /* Get reguired profession level of the recipe */
@@ -154,45 +153,38 @@ const getItemInfoFromSpellID = async (ID) => {
     return item
 }
 
-const alternativeScrape = async (ID, name) => {
+const alternativeScrape = async (ID, spell) => {
     let item = {}
     let data = await getData(ID, true)
-    /* Get reguired profession level of the recipe */
-    //item.profReq = +/\d+/.exec(/Requires \w+ \(\d+\)/g.exec(data))[0]
-    //console.log('profession requirement:', item.profReq)
-    /* Get the name of the item or recipe */
-    //let nameRegExp = /<h1>[\w ']+<\/h1>/g.exec(data)
-    //console.log(nameRegExp)
-    //item.name = nameRegExp.replace(/<(.*?)>/g, '')
-    //console.log('item name:', item.name)
-    item.name = name
-    console.log(item.name)
-    /* Get the ID of the item */
-    let itemIDRegExp = new RegExp('<a href="\\?item=\\d+">' + item.name,'g')
-    itemIDRegExp = /\d+/.exec(itemIDRegExp.exec(data))[0]
-    item.id = +itemIDRegExp
-    console.log('item id:', item.id)
-    
-    /* Get item quantity */
-    item.quantity = getQuantityFromItemId(item.id, data)
-    console.log('item quantity:', item.quantity)
-    
-    /* Get iconName */
-    let itemObjectRegExp = new RegExp('_\\[' + item.id + '\\](.+?)}')
-    let iconNameRegExp = /icon:(.*?),/.exec(itemObjectRegExp.exec(data)[0])[0]
-    item.iconName = iconNameRegExp.replace(/(icon:|,|')/g, '').toLocaleLowerCase()
-    console.log('item icon name:', item.iconName)
-    
+
+    item.name = spell.name_enus
+    item.iconName = spell.icon
+
     /* Get icon */
     if(!doesFileExist('./icons/' + item.iconName + '.png')) {
         getIcon(item.iconName + '.png')
     } 
 
+    /* Get reguired profession level of the recipe */
+    item.profReq = /Requires \w+ \(\d+\)/g.exec(data) ? +/\d+/.exec(/Requires \w+ \(\d+\)/g.exec(data))[0] : undefined
+    console.log('profession requirement:', item.profReq)
+
+    /* Get the object of the item on the page to get more info from it */
+    let itemObject = /_\[\d+\]={icon:'(.*?)',name_enus:'(.*?)'.quality:\d+}/.exec(data)[0]
+    console.log(itemObject)
+
+    /* Get the item id */
+    item.id = +/\d+/.exec(itemObject)[0]
+    console.log('item id:', item.id)
+
+    /* Get item quantity */
+    item.quantity = getQuantityFromItemId(item.id, data)
+    console.log('item quantity:', item.quantity)
+
     /* Get item quality */
-    let itemQualityRegExp = /quality:\d+/.exec(itemObjectRegExp.exec(data)[0])
-    item.quality = +/\d+/.exec(itemQualityRegExp[0])[0]
+    item.quality = +/\d+}$/.exec(itemObject)[0].replace('}', '')
     console.log('item quality:', item.quality)
-    
+
     /* Get tooltip */
     let tooltipRegExp = /<table class="tooltip-t"(.*)/.exec(data)[0]
     item.tooltip = getTooltip(tooltipRegExp, item.name)
@@ -210,7 +202,7 @@ const alternativeScrape = async (ID, name) => {
                 let reagentObjectRegExp = new RegExp('_\\[' + reagentID + '\\]' + '(.*?)};')
                 reagentObjectRegExp = reagentObjectRegExp.exec(data)[0]
                 let reagentIconName = /icon:'(.*?),/.exec(reagentObjectRegExp)[0].replace(/(icon:|'|,)/g, '').toLocaleLowerCase()
-                let reagentQuantity = getQuantityFromItemId(item.id, data)
+                let reagentQuantity = getQuantityFromItemId(reagentID, data)
                 let reagentQuality = +/\d+/.exec(/quality:\d+/.exec(reagentObjectRegExp)[0])[0]
                 if(!doesFileExist('./icons/' + reagentIconName + '.png')) {
                     await getIcon(reagentIconName + '.png')
@@ -233,9 +225,9 @@ const alternativeScrape = async (ID, name) => {
 async function main() {
     
 
-    let profession = require('./blacksmithing.json')
+    let profession = require('./enchanting.json')
     let newProfession = {}
-    let enchantItem = await alternativeScrape(76443, profession[76443].name_enus)
+    let enchantItem = await alternativeScrape(7776, profession[7776])
     console.log(enchantItem)
     // PROBABLY THE ITEM NAME IS CAUSING ALL THE FKING ISSUES
     /*
