@@ -65,7 +65,7 @@ const getTooltip = (tooltipRegExp, name) => {
                 let moneysilver = /<span class="moneysilver">\d+<\/span>/.exec(curr) ? +/\d+/.exec(/<span class="moneysilver">\d+<\/span>/.exec(curr)[0]) : 0
                 let moneygold = /<span class="moneygold">\d+<\/span>/.exec(curr) ? +/\d+/.exec(/<span class="moneygold">\d+<\/span>/.exec(curr)[0]) : 0
 
-                acc.vendorSellPrice = moneygold + (moneysilver / 100) + (moneycopper / 10000)
+                acc.vendorSellPrice = (moneygold + (moneysilver / 100) + (moneycopper / 10000)).toFixed(4)
             } else {
                 curr = curr.replace(/<(.*?)>/g, '')
                 if(curr) {
