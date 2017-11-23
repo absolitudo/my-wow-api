@@ -155,7 +155,7 @@ async function main() {
     for(let spellID in profession) {
         try {
             console.log(spellID, 'is processing')
-            let item = await getItemInfo(28584, profession[28584])
+            let item = await getItemInfo(spellID, profession[spellID])
             newProfession[item.name] = item
             console.log(spellID, item.name, 'is processed')
         } catch(e) {
