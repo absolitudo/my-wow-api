@@ -164,9 +164,9 @@ async function main() {
         }
     }
     
-    fs.writeFile('new-' + profName + '.json', JSON.stringify(newProfession), (something) => {
-        if(something) {
-            console.log(something)
+    fs.writeFile('new-' + profName + '.json', JSON.stringify(newProfession), (err) => {
+        if(err) {
+            console.log(err)
         } else {
             console.log('done')
         }
