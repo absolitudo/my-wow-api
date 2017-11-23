@@ -55,7 +55,7 @@ const getTooltip = (tooltipRegExp, name) => {
                 acc.castTime = curr.replace(/<(.*?)>/g, '')
             } else if(curr.includes('Item Level')) {
                 acc.itemLevel = +/\d+/.exec(curr.replace(/<(.*?)>/g, ''))[0]
-            } else if(curr.includes('Requires')) {
+            } else if(curr.includes('Requires Level')) {
                 acc.requiredLevel = +/\d+/.exec(curr.replace(/<(.*?)>/g, ''))[0]
             } else if(curr.includes('Stack')) {
                 acc.maxStack = +/\d+/.exec(curr.replace(/<(.*?)>/g, ''))[0]
@@ -105,13 +105,13 @@ const getItemInfo = async (ID, spell) => {
 
     /* Get the item id */
     item.id = +/\d+/.exec(itemObject)[0]
-
+    
     /* Get item quantity */
     item.quantity = getQuantityFromItemId(item.id, data)
-
+    
     /* Get item quality */
     item.quality = +/\d+}$/.exec(itemObject)[0].replace('}', '')
-
+    
     /* Get tooltip */
     let tooltipRegExp = /<table class="tooltip-t"(.*)/.exec(data)[0]
     item.tooltip = getTooltip(tooltipRegExp, item.name)
@@ -144,14 +144,15 @@ const getItemInfo = async (ID, spell) => {
                 }
             })
         )
+    
     return item
 }
 
 async function main() {
 
-    let profName = 'tailoring'
-
+    let profName = 'mining'
     let profession = require('./' + profName + '.json')
+    
     let newProfession = {}
     for(let spellID in profession) {
         try {
