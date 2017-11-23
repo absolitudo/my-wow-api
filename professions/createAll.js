@@ -22,7 +22,7 @@ let all = {
     tailoring
 }
 
-fs.writeFile('all.json', JSON.stringify(all), (err) => {
+fs.writeFile('allProfessions.json', JSON.stringify(all), (err) => {
     if(err) {
         console.log(err)
     } else {
