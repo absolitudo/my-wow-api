@@ -6,7 +6,7 @@ const http = require('http')
 const getIcon = (iconName) => {
     return new Promise((resolve, reject) => {
         request('http://mop-static.tauri.hu/images/icons/medium/' + iconName)
-            .pipe(fs.createWriteStream('./icons/' + iconName))
+            .pipe(fs.createWriteStream('./../icons/' + iconName))
             .on('close', resolve('Icon downloaded'))
     })
 }
@@ -93,7 +93,7 @@ const getItemInfo = async (ID, spell) => {
     item.iconName = spell.icon.toLocaleLowerCase()
 
     /* Get icon */
-    if(!doesFileExist('./icons/' + item.iconName + '.png')) {
+    if(!doesFileExist('./../icons/' + item.iconName + '.png')) {
         getIcon(item.iconName + '.png')
     } 
 
@@ -130,7 +130,7 @@ const getItemInfo = async (ID, spell) => {
                 let reagentIconName = /icon:'(.*?),/.exec(reagentObjectRegExp)[0].replace(/(icon:|'|,)/g, '').toLocaleLowerCase()
                 let reagentQuantity = getQuantityFromItemId(reagentID, data)
                 let reagentQuality = +/\d+/.exec(/quality:\d+/.exec(reagentObjectRegExp)[0])[0]
-                if(!doesFileExist('./icons/' + reagentIconName + '.png')) {
+                if(!doesFileExist('./../icons/' + reagentIconName + '.png')) {
                     await getIcon(reagentIconName + '.png')
                 }
 
@@ -148,9 +148,10 @@ const getItemInfo = async (ID, spell) => {
 }
 
 async function main() {
-    
 
-    let profession = require('./alchemy.json')
+    let profName = 'tailoring'
+
+    let profession = require('./' + profName + '.json')
     let newProfession = {}
     for(let spellID in profession) {
         try {
@@ -163,7 +164,7 @@ async function main() {
         }
     }
     
-    fs.writeFile('new-enchanting.json', JSON.stringify(newProfession), (something) => {
+    fs.writeFile('new-' + profName + '.json', JSON.stringify(newProfession), (something) => {
         if(something) {
             console.log(something)
         } else {
