@@ -90,7 +90,7 @@ const getItemInfo = async (ID, spell) => {
     let data = await getData(ID, true)
 
     item.name = spell.name_enus
-    item.iconName = spell.icon
+    item.iconName = spell.icon.toLocaleLowerCase()
 
     /* Get icon */
     if(!doesFileExist('./icons/' + item.iconName + '.png')) {
@@ -160,11 +160,6 @@ async function main() {
             console.log(spellID, item.name, 'is processed')
         } catch(e) {
             console.log(spellID, profession[spellID].name_enus, 'failed')
-            newProfession[profession[spellID].name_enus] = {
-                name: profession[spellID].name_enus,
-                spellID: spellID,
-                description: 'fetch failed'
-            }
         }
     }
     
