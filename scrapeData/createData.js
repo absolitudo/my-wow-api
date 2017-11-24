@@ -75,7 +75,8 @@ const getTooltip = (tooltipRegExp, name) => {
             return acc
         },{description: []})
 }
-/* Returns the information of an item from spell id */
+
+/* Gets the tooltip of a reagent */
 const getReagentTooltip = async (ID, name) => {
     let data = await getData(ID, false)
     return new Promise((resolve, reject) => {
