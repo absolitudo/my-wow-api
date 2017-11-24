@@ -1,11 +1,13 @@
-var express = require('express')
-var cors = require('cors')
-var app = express()
+const express = require('express')
+const cors = require('cors')
+let app = express()
 
 /* Routes */
-var professionRoutes = require('./professions/routes')
+const professionRoutes = require('./routes/profession')
+const iconRoutes = require('./routes/icon')
 app.use('/professions', cors())
 app.use('/professions', professionRoutes)
+app.use('/icon', iconRoutes)
 
 app.get('/', (req, res) => {
     res.send('A wow releated api.')
